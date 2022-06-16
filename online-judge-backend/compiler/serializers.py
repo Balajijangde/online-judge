@@ -29,10 +29,10 @@ class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         fields = ['id', 'title', 'level', 'description',
-                  'createdOn', 'timeout']
+                  'createdOn', 'timeout', 'input1', 'output1', 'input2', 'output2', 'constraint']
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = ['id', 'verdict', 'verdictCode', 'submittedOn']
+        fields = ['id', 'verdict', 'verdictCode', 'submittedOn', 'language']

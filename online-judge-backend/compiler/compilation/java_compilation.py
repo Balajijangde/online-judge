@@ -39,7 +39,8 @@ def javaCompilation(problem, user, body):
             verdictCode=VerdictCode.CompilationError,
             submittedOn=datetime.now(),
             problem=problem,
-            code=receivedCode
+            code=receivedCode,
+            language="java"
         )
         submissionWithCE.save()
         errorFile = open(folderName+"/"+compilationErrorFileName, "r")
@@ -83,7 +84,8 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.TimeLimitException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode
+                        code=receivedCode,
+                        language="java"
                     )
                     submissionWithTLE.save()
                     shutil.rmtree(folderName)
@@ -102,7 +104,8 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.RuntimeException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode
+                        code=receivedCode,
+                        language="java"
                     )
                     submissionWithTLE.save()
                     shutil.rmtree(folderName)
@@ -129,7 +132,8 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.WrongAnswer,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode
+                        code=receivedCode,
+                        language="java"
                     )
                     submissionWithWA.save()
                     shutil.rmtree(folderName)
@@ -146,7 +150,8 @@ def javaCompilation(problem, user, body):
             verdictCode=VerdictCode.AllClear,
             submittedOn=datetime.now(),
             problem=problem,
-            code=receivedCode
+            code=receivedCode,
+            language="java"
         )
         submission.save()
         shutil.rmtree(folderName)

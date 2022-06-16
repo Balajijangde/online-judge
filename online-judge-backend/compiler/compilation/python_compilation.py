@@ -55,7 +55,8 @@ def pythonCompilation(problem, user, body):
                     verdictCode=VerdictCode.TimeLimitException,
                     submittedOn=datetime.now(),
                     problem=problem,
-                    code=receivedCode
+                    code=receivedCode,
+                    language="python"
                 )
                 submissionWithTLE.save()
                 shutil.rmtree(folderName)
@@ -74,7 +75,8 @@ def pythonCompilation(problem, user, body):
                     verdictCode=VerdictCode.CompilationError,
                     submittedOn=datetime.now(),
                     problem=problem,
-                    code=receivedCode
+                    code=receivedCode,
+                    language="python"
                 )
                 submissionWithCE.save()
                 shutil.rmtree(folderName)
@@ -101,7 +103,8 @@ def pythonCompilation(problem, user, body):
                     verdictCode=VerdictCode.WrongAnswer,
                     submittedOn=datetime.now(),
                     problem=problem,
-                    code=receivedCode
+                    code=receivedCode,
+                    language="python"
                 )
                 submissionWithWA.save()
                 shutil.rmtree(folderName)
@@ -118,7 +121,8 @@ def pythonCompilation(problem, user, body):
         verdictCode=VerdictCode.AllClear,
         submittedOn=datetime.now(),
         problem=problem,
-        code=receivedCode
+        code=receivedCode,
+        language="python"
     )
     submission.save()
     shutil.rmtree(folderName)

@@ -20,6 +20,11 @@ class Problem(models.Model):
     title = models.CharField(max_length=50, default="")
     level = models.CharField(max_length=6)  # easy, medium, hard
     timeout = models.IntegerField(default=1)
+    input1 = models.TextField(default="")
+    output1 = models.TextField(default="")
+    input2 = models.TextField(default="")
+    output2 = models.TextField(default="")
+    constraint = models.TextField(default="")
 
     def __str__(self) -> str:
         return self.title
@@ -31,6 +36,7 @@ class Submission(models.Model):
     verdictCode = models.IntegerField(default=0)
     submittedOn = models.DateTimeField('time submitted')
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    language = models.CharField(max_length=10, default="cpp")
     code = models.TextField(default="")
 
     def __str__(self):

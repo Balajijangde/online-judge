@@ -26,3 +26,8 @@ code {
 .white{
   color: white !important;
 }
+
+.basicBlock{
+  background-color: #f7f9fa;
+  
+}

@@ -56,7 +56,12 @@ const ProblemScreen = () => {
   let code: string = "";
   const fetchProblem = async () => {
     try {
-      let res = await axios.get(`${Config.baseUrl}/problems/${problemId}`);
+      let res = await axios.get(`${Config.baseUrl}/problems/${problemId}`, {
+        headers: {
+          Authorization:
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU4MzM4MzkwLCJpYXQiOjE2NTcwNDIzOTAsImp0aSI6IjhhNmE1YWRmLWZjODgtMTFlYy05ODhiLWY4NjMzZmU0MjU2ZCIsInVzZXJfaWQiOjEzfQ.4Lg8jbC_l2i_jmoa0D0oKQABG5m-B26e8iwNd5om41o",
+        },
+      });
       setProblem(res.data);
       console.log(res);
     } catch (e) {
@@ -145,7 +150,13 @@ const ProblemScreen = () => {
     try {
       let res = await axios.post(
         `${Config.baseUrl}/problems/${problemId}/submission`,
-        data
+        data,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU4MzM4MzkwLCJpYXQiOjE2NTcwNDIzOTAsImp0aSI6IjhhNmE1YWRmLWZjODgtMTFlYy05ODhiLWY4NjMzZmU0MjU2ZCIsInVzZXJfaWQiOjEzfQ.4Lg8jbC_l2i_jmoa0D0oKQABG5m-B26e8iwNd5om41o",
+          },
+        }
       );
       setSubmissionRes(res.data);
     } catch (e: any) {

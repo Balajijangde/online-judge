@@ -11,9 +11,10 @@ import shutil
 def cppCompilation(problem, user, body):
     # create a folder with unique name where all operation goes
     folderName = "".join(str(uuid.uuid1()).split("-"))
-
+    lang = "cpp"
+    extension = ".cpp"
     os.mkdir(folderName)
-
+    codeFile = "submission/{}/{}{}".format(lang, folderName, extension)
     # create a cpp file and all received code
     cppFileName = "code.cpp"
     cppCompiledFileName = "out"
@@ -33,13 +34,16 @@ def cppCompilation(problem, user, body):
         currentWorkingDirectory, folderName, cppFileName, cppCompiledFileName, compilationErrorFileName)
     compilationCommand = os.system(compilationCommandString)
     if(compilationCommand != 0):
+        f1 = open(codeFile, "w")
+        f1.write(receivedCode)
+        f1.close()
         submissionWithCE = Submission(
             user=user,
             verdict="Compilation error",
             verdictCode=VerdictCode.CompilationError,
             submittedOn=datetime.now(),
             problem=problem,
-            code="cpp/{}.cpp".format(folderName),
+            code=codeFile,
             language="c++"
         )
         submissionWithCE.save()
@@ -76,6 +80,9 @@ def cppCompilation(problem, user, body):
                 errorFileHandler.close()
 
                 if(errorLines == ""):
+                    f1 = open(codeFile, "w")
+                    f1.write(receivedCode)
+                    f1.close()
                     submissionWithTLE = Submission(
                         user=user,
                         verdict="Time limit exception on {} testcase".format(
@@ -83,7 +90,7 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.TimeLimitException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code="cpp/{}.cpp".format(folderName),
+                        code=codeFile,
                         language="c++"
                     )
                     submissionWithTLE.save()
@@ -96,6 +103,9 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.TimeLimitException
                     ).build()
                 else:
+                    f1 = open(codeFile, "w")
+                    f1.write(receivedCode)
+                    f1.close()
                     submissionWithRE = Submission(
                         user=user,
                         verdict="Runtime error on testcase {}".format(
@@ -103,7 +113,7 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.RuntimeException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code="cpp/{}.cpp".format(folderName),
+                        code=codeFile,
                         language="c++"
                     )
                     submissionWithRE.save()
@@ -124,6 +134,9 @@ def cppCompilation(problem, user, body):
                 answer = answer.strip()
 
                 if(outputRes != answer):
+                    f1 = open(codeFile, "w")
+                    f1.write(receivedCode)
+                    f1.close()
                     submissionWithWA = Submission(
                         user=user,
                         verdict="Wrong answer on testcase {}".format(
@@ -131,7 +144,7 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.WrongAnswer,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code="cpp/{}.cpp".format(folderName),
+                        code=codeFile,
                         language="c++"
                     )
                     submissionWithWA.save()
@@ -143,13 +156,16 @@ def cppCompilation(problem, user, body):
                         status=406,
                         verdictCode=VerdictCode.WrongAnswer
                     ).build()
+        f1 = open(codeFile, "w")
+        f1.write(receivedCode)
+        f1.close()
         submission = Submission(
             user=user,
             verdict="All clear",
             verdictCode=VerdictCode.AllClear,
             submittedOn=datetime.now(),
             problem=problem,
-            code="cpp/{}.cpp".format(folderName),
+            code=codeFile,
             language="c++"
         )
         submission.save()

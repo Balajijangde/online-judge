@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+# from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
 urlpatterns = [
     # api
@@ -13,4 +14,7 @@ urlpatterns = [
     path('forgotPassword', views.forgotPassword, name="forgot password"),
     path('forgotPassword_verification/<str:email>/<str:token>',
          views.forgotPasswordVerification, name="forgot password verification"),
+    path('submission/<int:id>', views.submission_with_id, name="submission with id")
+    # path('token', TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    # path('token/refresh', TokenRefreshView.as_view(), name="token_refresh")
 ]

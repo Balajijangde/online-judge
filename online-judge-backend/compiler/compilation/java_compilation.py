@@ -11,9 +11,10 @@ import shutil
 def javaCompilation(problem, user, body):
     # create a folder with unique name where all operation goes
     folderName = "".join(str(uuid.uuid1()).split("-"))
-
+    lang = "java"
+    extension = ".java"
     os.mkdir(folderName)
-
+    codeFile = "submission/{}/{}{}".format(lang, folderName, extension)
     # create a cpp file and all received code
     javaFileName = "Code.java"
     javaCompiledFileName = "Code"
@@ -33,13 +34,16 @@ def javaCompilation(problem, user, body):
     compilationCommand = os.system(compilationCommandString)
 
     if(compilationCommand != 0):
+        f1 = open(codeFile, "w")
+        f1.write(receivedCode)
+        f1.close()
         submissionWithCE = Submission(
             user=user,
             verdict="Compilation error",
             verdictCode=VerdictCode.CompilationError,
             submittedOn=datetime.now(),
             problem=problem,
-            code=receivedCode,
+            code=codeFile,
             language="java"
         )
         submissionWithCE.save()
@@ -77,6 +81,9 @@ def javaCompilation(problem, user, body):
                 errorFileHandler.close()
 
                 if(errorLine == ""):
+                    f1 = open(codeFile, "w")
+                    f1.write(receivedCode)
+                    f1.close()
                     submissionWithTLE = Submission(
                         user=user,
                         verdict="Time limit exception on {} testcase".format(
@@ -84,7 +91,7 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.TimeLimitException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode,
+                        code=codeFile,
                         language="java"
                     )
                     submissionWithTLE.save()
@@ -97,6 +104,9 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.TimeLimitException
                     ).build()
                 else:
+                    f1 = open(codeFile, "w")
+                    f1.write(receivedCode)
+                    f1.close()
                     submissionWithTLE = Submission(
                         user=user,
                         verdict="Runtime error on {} testcase".format(
@@ -104,7 +114,7 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.RuntimeException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode,
+                        code=codeFile,
                         language="java"
                     )
                     submissionWithTLE.save()
@@ -125,6 +135,9 @@ def javaCompilation(problem, user, body):
                 answer = answer.strip()
 
                 if(outputRes != answer):
+                    f1 = open(codeFile, "w")
+                    f1.write(receivedCode)
+                    f1.close()
                     submissionWithWA = Submission(
                         user=user,
                         verdict="Wrong answer on testcase {}".format(
@@ -132,7 +145,7 @@ def javaCompilation(problem, user, body):
                         verdictCode=VerdictCode.WrongAnswer,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode,
+                        code=codeFile,
                         language="java"
                     )
                     submissionWithWA.save()
@@ -144,13 +157,16 @@ def javaCompilation(problem, user, body):
                         status=406,
                         verdictCode=VerdictCode.WrongAnswer
                     ).build()
+        f1 = open(codeFile, "w")
+        f1.write(receivedCode)
+        f1.close()
         submission = Submission(
             user=user,
             verdict="All clear",
             verdictCode=VerdictCode.AllClear,
             submittedOn=datetime.now(),
             problem=problem,
-            code=receivedCode,
+            code=codeFile,
             language="java"
         )
         submission.save()

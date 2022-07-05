@@ -15,12 +15,13 @@ import bcrypt
 from django.utils import timezone
 from compiler.common.config import BASE_URL, FRONTEND_BASE_URL
 import time
+import calendar
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 from pprint import pprint
 from .common.email_template import email_verification_html_template, forgot_password_html_template
-from oj_test.settings import bcryptSalt, sendInBlueApiKey
-import base64
+from oj_test.settings import bcryptSalt, sendInBlueApiKey, jwtSecret
+import jwt
 
 # Create your views here.
 
@@ -136,9 +137,21 @@ def login(request):
                 data="Email not verified, please verify email address than login"
             )
         # Create JWT and return it
+        issuedAt = calendar.timegm(time.gmtime())
+        expireAt = timezone.now() + timedelta(days=15)
+        claim_jwt_payload = {
+            "token_type": "access",
+            "exp": calendar.timegm(expireAt.timetuple()),
+            "iat": issuedAt,
+            "jti": str(uuid.uuid1()),
+            "user_id": user.id
+        }
+        encoded_claim_jwt = jwt.encode(claim_jwt_payload, jwtSecret, algorithm="HS256")
         return Response(
             status=200,
-            data="Logged in successfully"
+            data={
+                "token": encoded_claim_jwt
+            }
         )
     else:
         return Response(
@@ -167,7 +180,7 @@ def forgotPassword(request):
                 pass
             new_token = SignupToken(
                 token=str(uuid.uuid1()),
-                expiration=timezone.now()+timedelta(minutes=10),
+                expiration=timezone.now() + timedelta(minutes=10),
                 user=user
             )
             new_token.save()
@@ -185,7 +198,7 @@ def forgotPassword(request):
                 pass
             forgotPass = ForgotPasswordToken(
                 token=str(uuid.uuid1()),
-                expiration=timezone.now()+timedelta(minutes=10),
+                expiration=timezone.now() + timedelta(minutes=10),
                 user=user
             )
             forgotPass.save()
@@ -259,9 +272,13 @@ def sendEmail(subject: str, html_content: str, to_email: str):
 
 @api_view(['POST', 'GET'])
 def submission(request, id):
+    user_id = None
+    try:
+        user_id = validateAccessToken(request)
+    except:
+        return Response(status=401, data="Unauthorized or Invalid token")
     if request.method == "GET":
-        # TODO remove hardcoded user id
-        user = User.objects.get(pk=1)
+        user = User.objects.get(pk=user_id)
         problem = Problem.objects.get(pk=id)
         subs = Submission.objects.filter(user=user).filter(
             problem=problem).order_by('submittedOn')
@@ -292,7 +309,7 @@ def submission(request, id):
             }, status=400)
 
         # TODO User is hardcoded, had to change this to dynamic user id
-        user = User.objects.get(pk=1)
+        user = User.objects.get(pk=user_id)
 
         if language == "cpp":
             return cppCompilation(problem, user, body)
@@ -300,6 +317,27 @@ def submission(request, id):
             return javaCompilation(problem, user, body)
         else:
             return pythonCompilation(problem, user, body)
+
+@api_view(['GET'])
+def submission_with_id(request, id):
+    user_id = None
+    try:
+        user_id = validateAccessToken(request)
+    except:
+        return Response(status=401, data="Unauthorized or Invalid token")
+    try:
+        user = User.objects.get(pk=user_id)
+        submission = Submission.objects.get(pk=id, user=user)
+        serializer = SubmissionSerializer(submission, many=False)
+        data = serializer.data
+        codefile = open(submission.code, "r")
+        codes = codefile.read()
+        codefile.close()
+        data["codes"] = codes
+        return JsonResponse(data, safe=False)
+
+    except Submission.DoesNotExist:
+        return Response(status=404, data="Submission not found")
 
 
 @api_view(['GET'])
@@ -312,6 +350,10 @@ def problems(request):
 @api_view(['GET'])
 def problem(request, id):
     try:
+        validateAccessToken(request)
+    except:
+        return Response(status=401, data="Unauthorized or Invalid token")
+    try:
         problem = Problem.objects.get(pk=id)
     except Problem.DoesNotExist:
         raise Http404("Problem not found")
@@ -319,5 +361,11 @@ def problem(request, id):
     return JsonResponse(serializer.data, safe=False)
 
 
-def testView(request):
-    pass
+def validateAccessToken(request) -> int:
+    try:
+        token = request.headers["Authorization"].split(" ")[1]
+        decoded_token = jwt.decode(token, jwtSecret, algorithms="HS256")
+        return decoded_token["user_id"]
+    except Exception as e:
+        print(e)
+        raise Exception("Unauthorized 401")

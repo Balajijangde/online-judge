@@ -11,14 +11,15 @@ import shutil
 def pythonCompilation(problem, user, body):
     # create a folder with unique name where all operation goes
     folderName = "".join(str(uuid.uuid1()).split("-"))
-
+    lang = "python"
+    extension = ".py"
     os.mkdir(folderName)
 
     # create a cpp file and all received code
     pythonFileName = "code.py"
 
     receivedCode = body["codes"]
-
+    codeFile = "submission/{}/{}{}".format(lang, folderName, extension)
     # create a cpp file and put all received code
     pythonFileHandler = open(folderName+"/"+pythonFileName, "w")
     pythonFileHandler.write(receivedCode)
@@ -47,7 +48,10 @@ def pythonCompilation(problem, user, body):
             errorFileHandler.close()
 
             if(errorLines == ""):
-                # timeout occured
+
+                f1 = open(codeFile, "w")
+                f1.write(receivedCode)
+                f1.close()
                 submissionWithTLE = Submission(
                     user=user,
                     verdict="Time limit exception on testcase {}".format(
@@ -55,7 +59,7 @@ def pythonCompilation(problem, user, body):
                     verdictCode=VerdictCode.TimeLimitException,
                     submittedOn=datetime.now(),
                     problem=problem,
-                    code=receivedCode,
+                    code=codeFile,
                     language="python"
                 )
                 submissionWithTLE.save()
@@ -69,13 +73,16 @@ def pythonCompilation(problem, user, body):
                 ).build()
             else:
                 # compilation error occured
+                f1 = open(codeFile, "w")
+                f1.write(receivedCode)
+                f1.close()
                 submissionWithCE = Submission(
                     user=user,
                     verdict="Compilation error",
                     verdictCode=VerdictCode.CompilationError,
                     submittedOn=datetime.now(),
                     problem=problem,
-                    code=receivedCode,
+                    code=codeFile,
                     language="python"
                 )
                 submissionWithCE.save()
@@ -96,6 +103,9 @@ def pythonCompilation(problem, user, body):
             answer = answer.strip()
 
             if(outputRes != answer):
+                f1 = open(codeFile, "w")
+                f1.write(receivedCode)
+                f1.close()
                 submissionWithWA = Submission(
                     user=user,
                     verdict="Wrong answer on testcase {}".format(
@@ -103,7 +113,7 @@ def pythonCompilation(problem, user, body):
                     verdictCode=VerdictCode.WrongAnswer,
                     submittedOn=datetime.now(),
                     problem=problem,
-                    code=receivedCode,
+                    code=codeFile,
                     language="python"
                 )
                 submissionWithWA.save()
@@ -115,13 +125,16 @@ def pythonCompilation(problem, user, body):
                     status=406,
                     verdictCode=VerdictCode.WrongAnswer
                 ).build()
+    f1 = open(codeFile, "w")
+    f1.write(receivedCode)
+    f1.close()
     submission = Submission(
         user=user,
         verdict="All clear",
         verdictCode=VerdictCode.AllClear,
         submittedOn=datetime.now(),
         problem=problem,
-        code=receivedCode,
+        code=codeFile,
         language="python"
     )
     submission.save()

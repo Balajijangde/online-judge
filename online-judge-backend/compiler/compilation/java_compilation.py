@@ -1,5 +1,5 @@
 from datetime import datetime
-from compiler.common.compiler_json_response import CompilerJsonResponse
+from compiler.model.out.judge_response import CompilerJsonResponse
 from compiler.common.verdict_code import VerdictCode
 from compiler.models import Problem, Submission, User
 import os

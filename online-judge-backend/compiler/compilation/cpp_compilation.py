@@ -1,5 +1,5 @@
 from datetime import datetime
-from compiler.common.compiler_json_response import CompilerJsonResponse
+from compiler.model.out.judge_response import CompilerJsonResponse
 from compiler.common.verdict_code import VerdictCode
 from compiler.models import Problem, Submission, User
 import os
@@ -39,7 +39,7 @@ def cppCompilation(problem, user, body):
             verdictCode=VerdictCode.CompilationError,
             submittedOn=datetime.now(),
             problem=problem,
-            code=receivedCode,
+            code="cpp/{}.cpp".format(folderName),
             language="c++"
         )
         submissionWithCE.save()
@@ -83,7 +83,7 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.TimeLimitException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode,
+                        code="cpp/{}.cpp".format(folderName),
                         language="c++"
                     )
                     submissionWithTLE.save()
@@ -103,7 +103,7 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.RuntimeException,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode,
+                        code="cpp/{}.cpp".format(folderName),
                         language="c++"
                     )
                     submissionWithRE.save()
@@ -131,7 +131,7 @@ def cppCompilation(problem, user, body):
                         verdictCode=VerdictCode.WrongAnswer,
                         submittedOn=datetime.now(),
                         problem=problem,
-                        code=receivedCode,
+                        code="cpp/{}.cpp".format(folderName),
                         language="c++"
                     )
                     submissionWithWA.save()
@@ -149,7 +149,7 @@ def cppCompilation(problem, user, body):
             verdictCode=VerdictCode.AllClear,
             submittedOn=datetime.now(),
             problem=problem,
-            code=receivedCode,
+            code="cpp/{}.cpp".format(folderName),
             language="c++"
         )
         submission.save()

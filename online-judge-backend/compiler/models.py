@@ -6,10 +6,29 @@ from django.db import models
 class User(models.Model):
     email = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
+    isActive = models.BooleanField(default=True)
     registeredOn = models.DateTimeField('date registered')
 
     def __str__(self):
         return str(self.email)
+
+
+class SignupToken(models.Model):
+    token = models.CharField(max_length=100)
+    expiration = models.DateTimeField('signup verification token expiration')
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return str(self.token)
+
+
+class ForgotPasswordToken(models.Model):
+    token = models.CharField(max_length=100)
+    expiration = models.DateTimeField('forgot password token expiration')
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return str(self.token)
 
 
 class Problem(models.Model):
@@ -37,7 +56,7 @@ class Submission(models.Model):
     submittedOn = models.DateTimeField('time submitted')
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     language = models.CharField(max_length=10, default="cpp")
-    code = models.TextField(default="")
+    code = models.CharField(max_length=100, default="")
 
     def __str__(self):
         return self.user.email+"#"+str(self.problem.id)+"#"+str(self.verdictCode)

@@ -144,7 +144,8 @@ def login(request):
             "exp": calendar.timegm(expireAt.timetuple()),
             "iat": issuedAt,
             "jti": str(uuid.uuid1()),
-            "user_id": user.id
+            "user_id": user.id,
+            "email": user.email
         }
         encoded_claim_jwt = jwt.encode(claim_jwt_payload, jwtSecret, algorithm="HS256")
         return Response(

@@ -26,6 +26,9 @@ code {
 .white{
   color: white !important;
 }
+.pointer{
+  cursor: pointer;
+}
 
 .basicBlock{
   background-color: #f7f9fa;

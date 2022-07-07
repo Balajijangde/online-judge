@@ -127,7 +127,15 @@ def login(request):
         )
 
     encodedPassword = body["password"].encode('utf-8')
-    user = User.objects.get(email=body["email"])
+    user = None
+    try:
+        user = User.objects.get(email=body["email"])
+    except User.DoesNotExist:
+        return Response(
+            status=404,
+            data="No record found with matching email and password"
+        )
+
     passw = user.password
     passw = passw.encode('utf-8')
     if bcrypt.checkpw(encodedPassword, passw):
@@ -282,7 +290,7 @@ def submission(request, id):
         user = User.objects.get(pk=user_id)
         problem = Problem.objects.get(pk=id)
         subs = Submission.objects.filter(user=user).filter(
-            problem=problem).order_by('submittedOn')
+            problem=problem).order_by('-submittedOn')
         serializer = SubmissionSerializer(subs, many=True)
         return JsonResponse(serializer.data, safe=False)
     elif request.method == "POST":

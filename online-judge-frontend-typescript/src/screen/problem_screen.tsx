@@ -11,6 +11,7 @@ import {
   Row,
   Spinner,
   Tab,
+  Table,
   Tabs,
 } from "react-bootstrap";
 import CodeMirror from "@uiw/react-codemirror";
@@ -21,20 +22,117 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import ProblemDetailProps from "../model/problem_detail_props";
 import SubmissionResponse from "../model/submission_response";
 import VerdictCode from "../common/verdict_code";
+import { cppTemplate, javaTemplate, pythonTemplate } from "./language_template";
+import { BACKEND_BASE_URL, OJ_TOKEN_KEY } from "../common/constants";
+import ProblemSubmission from "../model/in/problem_submission";
+import { useNavigate } from "react-router-dom";
 
-const cppTemplate = `#include<bits/stdc++.h>
-using namespace std;
-int main(){
-  cout << "Hello World";
-}`;
+const RecentSubmissionComponent = () => {
+  let navigate = useNavigate();
+  const [submissions, setSubmissions] = useState<Array<ProblemSubmission>>([]);
+  const [busy, setBusy] = useState<boolean>(false);
+  const { problemId } = useParams();
 
-const javaTemplate = `class Code{
-  public static void main(String[] args){
-    System.out.println("Hello world")
-  }
-}`;
-
-const pythonTemplate = `print("Hello World")`;
+  const convertVerdictCodeToText = (code: number) => {
+    switch (code) {
+      case VerdictCode.AllClear:
+        return <p className="easy">Accepted</p>;
+      case VerdictCode.CompilationError:
+        return <p className="hard">Compilation error</p>;
+      case VerdictCode.WrongAnswer:
+        return <p className="hard">Wrong answer</p>;
+      case VerdictCode.TimeLimitException:
+        return <p className="hard">Time limit exception</p>;
+      case VerdictCode.RuntimeException:
+        return <p>Runtime exception</p>;
+    }
+  };
+  const renderDateTime = (data: string) => {
+    const section = data.split("T");
+    const date = section[0].split("-").join("/");
+    const time = section[1].split(".")[0];
+    return `${date} ${time}`;
+  };
+  const fetchRecentSubmission = async () => {
+    setBusy(true);
+    const data = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(OJ_TOKEN_KEY)}`,
+      },
+    };
+    if (localStorage.getItem(OJ_TOKEN_KEY) === null) {
+      alert("Authetication token required");
+      setBusy(false);
+      return;
+    }
+    try {
+      const recentSubmissionRes = await axios.get(
+        `${BACKEND_BASE_URL}/problems/${problemId}/submission`,
+        data
+      );
+      setSubmissions(recentSubmissionRes.data);
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        alert(e.message);
+      } else {
+        console.log(e);
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+  useEffect(() => {
+    fetchRecentSubmission();
+  }, []);
+  return busy ? (
+    <Spinner animation="border"></Spinner>
+  ) : submissions.length == 0 ? (
+    <div>
+      <Button
+        className="mb-3 float-right"
+        variant="primary"
+        onClick={fetchRecentSubmission}
+      >
+        Refresh
+      </Button>
+      <p>No recent submissions found</p>
+    </div>
+  ) : (
+    <div>
+      <Button
+        className="mb-3 float-right"
+        variant="primary"
+        onClick={fetchRecentSubmission}
+      >
+        Refresh
+      </Button>
+      <Table bordered striped hover>
+        <thead>
+          <tr>
+            <td>Language</td>
+            <td>Submitted on</td>
+            <td>Verdict</td>
+          </tr>
+        </thead>
+        <tbody>
+          {submissions.map((sub: ProblemSubmission) => (
+            <tr
+              key={sub.id}
+              className="pointer"
+              onClick={() => {
+                navigate(`../../submission/${sub.id}`);
+              }}
+            >
+              <td>{sub.language}</td>
+              <td>{renderDateTime(sub.submittedOn)}</td>
+              <td>{convertVerdictCodeToText(sub.verdictCode)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
+};
 
 const ProblemScreen = () => {
   let { problemId } = useParams();
@@ -44,6 +142,7 @@ const ProblemScreen = () => {
   const [submissionRes, setSubmissionRes] = useState<SubmissionResponse | null>(
     null
   );
+  const [busy, setBusy] = useState<boolean>(false);
   enum submitStatusEnum {
     notStarted,
     submitting,
@@ -55,17 +154,28 @@ const ProblemScreen = () => {
 
   let code: string = "";
   const fetchProblem = async () => {
+    setBusy(true);
+    if (localStorage.getItem(OJ_TOKEN_KEY) === null) {
+      alert("Authetication token required");
+      setBusy(false);
+      return;
+    }
     try {
       let res = await axios.get(`${Config.baseUrl}/problems/${problemId}`, {
         headers: {
-          Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU4MzM4MzkwLCJpYXQiOjE2NTcwNDIzOTAsImp0aSI6IjhhNmE1YWRmLWZjODgtMTFlYy05ODhiLWY4NjMzZmU0MjU2ZCIsInVzZXJfaWQiOjEzfQ.4Lg8jbC_l2i_jmoa0D0oKQABG5m-B26e8iwNd5om41o",
+          Authorization: `Bearer ${localStorage.getItem(OJ_TOKEN_KEY)}`,
         },
       });
       setProblem(res.data);
       console.log(res);
     } catch (e) {
-      console.log(e);
+      if (e instanceof AxiosError) {
+        alert(e.message);
+      } else {
+        console.log(e);
+      }
+    } finally {
+      setBusy(false);
     }
   };
   const renderSubmissionTab = () => {
@@ -118,13 +228,10 @@ const ProblemScreen = () => {
   };
   const languageSupport = () => {
     if (language == "cpp") {
-      console.log("supporting c++");
       return [cpp()];
     } else if (language == "java") {
-      console.log("supporting java");
       return [java()];
     } else {
-      console.log("supporting python");
       return [python()];
     }
   };
@@ -141,20 +248,24 @@ const ProblemScreen = () => {
   }, []);
 
   const submitCode = async () => {
+    if (localStorage.getItem(OJ_TOKEN_KEY) === null) {
+      alert("Authetication token required");
+      return;
+    }
     setTabActiveKey("submission");
     setSubmitStatus(submitStatusEnum.submitting);
     let data = {
       codes: code,
       language: language,
     };
+
     try {
       let res = await axios.post(
         `${Config.baseUrl}/problems/${problemId}/submission`,
         data,
         {
           headers: {
-            Authorization:
-              "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU4MzM4MzkwLCJpYXQiOjE2NTcwNDIzOTAsImp0aSI6IjhhNmE1YWRmLWZjODgtMTFlYy05ODhiLWY4NjMzZmU0MjU2ZCIsInVzZXJfaWQiOjEzfQ.4Lg8jbC_l2i_jmoa0D0oKQABG5m-B26e8iwNd5om41o",
+            Authorization: `Bearer ${localStorage.getItem(OJ_TOKEN_KEY)}`,
           },
         }
       );
@@ -164,7 +275,7 @@ const ProblemScreen = () => {
       if (e.response.status == 406) {
         setSubmissionRes(e.response.data);
       } else {
-        throw e;
+        console.log(e);
       }
     }
 
@@ -173,16 +284,20 @@ const ProblemScreen = () => {
   };
 
   const renderProblem = () => {
-    if (problem == null) {
-      return (
-        <Row>
-          <Col>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          </Col>
-        </Row>
-      );
+    if (busy || problem === null) {
+      if (problem === null) {
+        return <div></div>;
+      } else {
+        return (
+          <Row>
+            <Col>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </Col>
+          </Row>
+        );
+      }
     } else {
       return (
         <Row>
@@ -235,6 +350,9 @@ const ProblemScreen = () => {
             </Tab>
             <Tab eventKey="submission" title="Submission">
               {renderSubmissionTab()}
+            </Tab>
+            <Tab eventKey="recent_submission" title="Recent submissions">
+              <RecentSubmissionComponent /> {/* <RenderRecentSubmission /> */}
             </Tab>
           </Tabs>
         </Col>

@@ -26,6 +26,13 @@ import { cppTemplate, javaTemplate, pythonTemplate } from "./language_template";
 import { BACKEND_BASE_URL, OJ_TOKEN_KEY } from "../common/constants";
 import ProblemSubmission from "../model/in/problem_submission";
 import { useNavigate } from "react-router-dom";
+import { darcula } from "@uiw/codemirror-theme-darcula";
+import { abcdef } from "@uiw/codemirror-theme-abcdef";
+import { bespin } from "@uiw/codemirror-theme-bespin";
+import { okaidia } from "@uiw/codemirror-theme-okaidia";
+import { duotoneDark, duotoneLight } from "@uiw/codemirror-theme-duotone";
+import { dracula } from "@uiw/codemirror-theme-dracula";
+import { eclipse } from "@uiw/codemirror-theme-eclipse";
 
 const RecentSubmissionComponent = () => {
   let navigate = useNavigate();
@@ -138,6 +145,7 @@ const ProblemScreen = () => {
   let { problemId } = useParams();
   const [problem, setProblem] = useState<ProblemDetailProps | null>(null);
   const [language, setLanguage] = useState("cpp");
+  const [theme, setTheme] = useState("one-dark");
   const [tabActiveKey, setTabActiveKey] = useState<string>("description");
   const [submissionRes, setSubmissionRes] = useState<SubmissionResponse | null>(
     null
@@ -233,6 +241,38 @@ const ProblemScreen = () => {
       return [java()];
     } else {
       return [python()];
+    }
+  };
+
+  const themeSupport = () => {
+    switch (theme) {
+      case "one-dark":
+        return oneDark;
+      case "abcdef":
+        return abcdef;
+      case "okaidia":
+        return okaidia;
+      case "bespin":
+        return bespin;
+      case "duotone-dark":
+        return duotoneDark;
+      case "duotone-light":
+        return duotoneLight;
+      case "dracula":
+        return dracula;
+      case "eclipse":
+        return eclipse;
+      case "darcula":
+        return darcula;
+      default:
+        return oneDark;
+    }
+    if (theme == "one-dark") {
+      return oneDark;
+    } else if (theme == "darcula") {
+      return darcula;
+    } else {
+      return oneDark;
     }
   };
   const setLanguageSupport = (e: BaseSyntheticEvent) => {
@@ -366,15 +406,22 @@ const ProblemScreen = () => {
               </Form.Select>
             </Col>
             <Col>
-              <Form.Select>
+              <Form.Select onChange={(e) => setTheme(e.target.value)}>
                 <option>one-dark</option>
+                <option>darcula</option>
+                <option>okaidia</option>
+                <option>bespin</option>
+                <option>duotone-dark</option>
+                <option>duotone-light</option>
+                <option>dracula</option>
+                <option>eclipse</option>
               </Form.Select>
             </Col>
           </Row>
           <CodeMirror
             value={setLanguageTemplate()}
             height="500px"
-            theme={oneDark}
+            theme={themeSupport()}
             extensions={languageSupport()}
             onChange={(value, viewUpdate) => (code = value)}
           />

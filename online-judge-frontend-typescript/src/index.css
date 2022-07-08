@@ -34,3 +34,6 @@ code {
   background-color: #f7f9fa;
   
 }
+a:link, a:visited{
+  text-decoration: none;
+}

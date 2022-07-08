@@ -22,6 +22,8 @@ import ForgotPasswordComponent from "./screen/forgot_password_component";
 import ForgotPasswordConfirmationComponent from "./screen/forgot_password_confirmation_component";
 import { useStoreActions, useStoreState } from "./hooks";
 import SubmissionComponent from "./screen/submission_component";
+import AuthRequiredComponent from "./screen/auth_require_component";
+import PrivateRouteWrapper from "./component/private_route_wrapper";
 
 export interface StoreModel {
   isLoggedIn: boolean;
@@ -50,7 +52,9 @@ const App = () => {
     <Router>
       <Navbar bg="dark" expand="lg">
         <Container fluid>
-          <Navbar.Brand className="white">Creatish Judge</Navbar.Brand>
+          <Navbar.Brand className="white" href="/">
+            Creatish Judge
+          </Navbar.Brand>
           <Nav>
             <Nav.Link className="white" href="/">
               Home
@@ -81,7 +85,10 @@ const App = () => {
       </Navbar>
       <Routes>
         <Route path="/problems" element={<ProblemsScreen />} />
-        <Route path="/problems/:problemId" element={<ProblemScreen />} />
+        <Route
+          path="/problems/:problemId"
+          element={<PrivateRouteWrapper element={<ProblemScreen />} />}
+        />
         <Route path="/login" element={<LoginComponent />} />
         <Route path="/signup" element={<SignupComponent />} />
         <Route
@@ -89,7 +96,10 @@ const App = () => {
           element={<ForgotPasswordConfirmationComponent />}
         />
         <Route path="/forgotPassword" element={<ForgotPasswordComponent />} />
-        <Route path="/submission/:id" element={<SubmissionComponent />} />
+        <Route
+          path="/submission/:id"
+          element={<PrivateRouteWrapper element={<SubmissionComponent />} />}
+        />
         <Route path="/" element={<WelcomeComponent />} />
       </Routes>
     </Router>

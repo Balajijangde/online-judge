@@ -33,6 +33,7 @@ import { okaidia } from "@uiw/codemirror-theme-okaidia";
 import { duotoneDark, duotoneLight } from "@uiw/codemirror-theme-duotone";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { eclipse } from "@uiw/codemirror-theme-eclipse";
+import { FiRefreshCw } from "react-icons/fi";
 
 const RecentSubmissionComponent = () => {
   let navigate = useNavigate();
@@ -100,7 +101,7 @@ const RecentSubmissionComponent = () => {
         variant="primary"
         onClick={fetchRecentSubmission}
       >
-        Refresh
+        <FiRefreshCw />
       </Button>
       <p>No recent submissions found</p>
     </div>
@@ -111,7 +112,7 @@ const RecentSubmissionComponent = () => {
         variant="primary"
         onClick={fetchRecentSubmission}
       >
-        Refresh
+        <FiRefreshCw />
       </Button>
       <Table bordered striped hover>
         <thead>
@@ -267,13 +268,6 @@ const ProblemScreen = () => {
       default:
         return oneDark;
     }
-    if (theme == "one-dark") {
-      return oneDark;
-    } else if (theme == "darcula") {
-      return darcula;
-    } else {
-      return oneDark;
-    }
   };
   const setLanguageSupport = (e: BaseSyntheticEvent) => {
     console.log(e);
@@ -377,7 +371,7 @@ const ProblemScreen = () => {
   return (
     <Container fluid>
       <Row className={"py-2"}>
-        <Col>
+        <Col md={12} lg={6}>
           <Tabs
             activeKey={tabActiveKey}
             onSelect={(k) => {
@@ -392,11 +386,11 @@ const ProblemScreen = () => {
               {renderSubmissionTab()}
             </Tab>
             <Tab eventKey="recent_submission" title="Recent submissions">
-              <RecentSubmissionComponent /> {/* <RenderRecentSubmission /> */}
+              <RecentSubmissionComponent />
             </Tab>
           </Tabs>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
           <Row className={"py-2"}>
             <Col>
               <Form.Select onChange={(e) => setLanguage(e.target.value)}>

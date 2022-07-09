@@ -1,7 +1,6 @@
 import React, { useState, useEffect, BaseSyntheticEvent } from "react";
 import { useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import Config from "../config";
 import {
   Alert,
   Button,
@@ -170,7 +169,7 @@ const ProblemScreen = () => {
       return;
     }
     try {
-      let res = await axios.get(`${Config.baseUrl}/problems/${problemId}`, {
+      let res = await axios.get(`${BACKEND_BASE_URL}/problems/${problemId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem(OJ_TOKEN_KEY)}`,
         },
@@ -295,7 +294,7 @@ const ProblemScreen = () => {
 
     try {
       let res = await axios.post(
-        `${Config.baseUrl}/problems/${problemId}/submission`,
+        `${BACKEND_BASE_URL}/problems/${problemId}/submission`,
         data,
         {
           headers: {

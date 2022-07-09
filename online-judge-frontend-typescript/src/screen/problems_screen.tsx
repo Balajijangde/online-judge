@@ -1,10 +1,10 @@
 import { Spinner, Container, Col, Row, Table } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Config from "../config";
 import ProblemProps from "../model/problem_props";
 import Problem from "../component/problem";
 import { Link } from "react-router-dom";
+import { BACKEND_BASE_URL } from "../common/constants";
 
 const ProblemsScreen = () => {
   const [problems, setProblems] = useState([]);
@@ -12,7 +12,7 @@ const ProblemsScreen = () => {
     fetchProblems();
   }, []);
   const fetchProblems = async () => {
-    let res = await axios.get(`${Config.baseUrl}/problems`);
+    let res = await axios.get(`${BACKEND_BASE_URL}/problems`);
     setProblems(res.data);
   };
   const renderProblems = () => {

@@ -8,7 +8,6 @@ import {
 } from "../common/constants";
 import { Link, useNavigate } from "react-router-dom";
 import { useStoreActions } from "../hooks";
-import { StoreModel } from "../App";
 
 const LoginComponent = () => {
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ const LoginComponent = () => {
         localStorage.setItem(OJ_TOKEN_KEY, apiRes.data["token"]);
         setIsLoggedIn(true);
         navigate("../", { replace: true });
-        window.location.reload();
       } catch (e: unknown) {
         if (e instanceof AxiosError) {
           setErrors([e.response?.data]);

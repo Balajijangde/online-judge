@@ -43,21 +43,11 @@ const ProblemsScreen = () => {
               </thead>
               <tbody>
                 {problems.map((problem: ProblemProps) => (
-                  <tr key={problem.id}>
-                    <td>
-                      <p>{problem.id}</p>
-                    </td>
-                    <td>
-                      <p>
-                        <Link to={`/problems/${problem.id}`}>
-                          {problem.title}
-                        </Link>
-                      </p>
-                    </td>
-                    <td>
-                      <p className={problem.level}>{problem.level}</p>
-                    </td>
-                  </tr>
+                  <Problem
+                    id={problem.id}
+                    title={problem.title}
+                    level={problem.level}
+                  />
                 ))}
               </tbody>
             </Table>

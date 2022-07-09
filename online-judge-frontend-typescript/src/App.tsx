@@ -1,11 +1,4 @@
-import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
@@ -14,7 +7,6 @@ import ProblemScreen from "./screen/problem_screen";
 import ProblemsScreen from "./screen/problems_screen";
 import LoginComponent from "./screen/login_componenet";
 import { OJ_TOKEN_KEY } from "./common/constants";
-import LogoutComponent from "./screen/logout_component";
 import WelcomeComponent from "./screen/welcome_component";
 import { Action, action, createStore, StoreProvider } from "easy-peasy";
 import SignupComponent from "./screen/signup_component";
@@ -22,16 +14,15 @@ import ForgotPasswordComponent from "./screen/forgot_password_component";
 import ForgotPasswordConfirmationComponent from "./screen/forgot_password_confirmation_component";
 import { useStoreActions, useStoreState } from "./hooks";
 import SubmissionComponent from "./screen/submission_component";
-import AuthRequiredComponent from "./screen/auth_require_component";
 import PrivateRouteWrapper from "./component/private_route_wrapper";
 
 export interface StoreModel {
   isLoggedIn: boolean;
-  setIsLoggedIn: Action<StoreModel, boolean>;
+  setIsLoggedIn: Action<this, boolean>;
 }
 
 const store = createStore<StoreModel>({
-  isLoggedIn: false,
+  isLoggedIn: localStorage.getItem(OJ_TOKEN_KEY) === null ? false : true,
   setIsLoggedIn: action((state, payload) => {
     state.isLoggedIn = payload;
   }),
@@ -40,14 +31,6 @@ const store = createStore<StoreModel>({
 const App = () => {
   const setIsLoggedIn = useStoreActions((actions) => actions.setIsLoggedIn);
   const isLoggedIn = useStoreState((state) => state.isLoggedIn);
-  useEffect(() => {
-    if (localStorage.getItem(OJ_TOKEN_KEY) === null) {
-      setIsLoggedIn(false);
-    } else {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
   return (
     <Router>
       <Navbar bg="dark" expand="lg">
@@ -70,7 +53,6 @@ const App = () => {
                   e.preventDefault();
                   localStorage.removeItem(OJ_TOKEN_KEY);
                   setIsLoggedIn(false);
-                  window.location.reload();
                 }}
               >
                 Logout

@@ -1,5 +1,4 @@
 import { Container, Row, Col, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 const WelcomeComponent = () => {
   return (

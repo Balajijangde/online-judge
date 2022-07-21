@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/online-jugde/static/css/main.411a195b.css",
-    "main.js": "/online-jugde/static/js/main.f510c929.js",
+    "main.js": "/online-jugde/static/js/main.12704bd2.js",
     "static/js/787.34a4c253.chunk.js": "/online-jugde/static/js/787.34a4c253.chunk.js",
     "index.html": "/online-jugde/index.html",
     "main.411a195b.css.map": "/online-jugde/static/css/main.411a195b.css.map",
-    "main.f510c929.js.map": "/online-jugde/static/js/main.f510c929.js.map",
+    "main.12704bd2.js.map": "/online-jugde/static/js/main.12704bd2.js.map",
     "787.34a4c253.chunk.js.map": "/online-jugde/static/js/787.34a4c253.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.411a195b.css",
-    "static/js/main.f510c929.js"
+    "static/js/main.12704bd2.js"
   ]
 }

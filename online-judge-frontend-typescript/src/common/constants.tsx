@@ -1,4 +1,4 @@
-export const BACKEND_BASE_URL = "http://localhost:8000/api/v1";
+export const BACKEND_BASE_URL = "http://3.6.160.196/api/v1";
 export const LOGIN_ENDPOINT = "login";
 export const SIGNUP_ENDPOINT = "user";
 export const FORGOT_PASSWORD_ENDPOINT = "forgotPassword";

@@ -29,7 +29,7 @@ def javaCompilation(problem, user, body):
     compilationErrorFileName = "err.txt"
     # command : docker --rm -v <current path to mount>:<container path to mount> -w <working directory> openjdk:11 bash -c "javac Code.java 2> err.txt"
     currentWorkingDirectory = os.getcwd()
-    compilationCommandString = "docker run --rm -v \"{}\\{}\":/usr/share/cpp -w /usr/share/cpp openjdk:11 bash -c \"javac {} 2> {}\"".format(
+    compilationCommandString = "docker run --rm -v {}/{}:/usr/share/cpp -w /usr/share/cpp openjdk:11 bash -c \"javac {} 2> {}\"".format(
         currentWorkingDirectory, folderName, javaFileName, compilationErrorFileName, compilationErrorFileName)
     compilationCommand = os.system(compilationCommandString)
 
@@ -72,7 +72,7 @@ def javaCompilation(problem, user, body):
             errFile = "err.txt"
 
             exec = os.system(
-                "docker run --rm -v \"{}\\{}\":/usr/share/cpp -w /usr/share/cpp openjdk:11 bash -c \"timeout {} java {} < {} > {} 2> {}\"".format(currentWorkingDirectory, folderName, problem.timeout, javaCompiledFileName, "in.txt", "out.txt", errFile))
+                "docker run --rm -v {}/{}:/usr/share/cpp -w /usr/share/cpp openjdk:11 bash -c \"timeout {} java {} < {} > {} 2> {}\"".format(currentWorkingDirectory, folderName, problem.timeout, javaCompiledFileName, "in.txt", "out.txt", errFile))
 
             if(exec != 0):
 

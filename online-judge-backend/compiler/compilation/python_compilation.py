@@ -39,7 +39,7 @@ def pythonCompilation(problem, user, body):
         inputFile.write(testcase)
         inputFile.close()
 
-        runCommandString = "docker run --rm -v \"{}\\{}\":/usr/share/cpp -w /usr/share/cpp python:3 bash -c \"timeout {} python {} < {} > {} 2> {}\"".format(
+        runCommandString = "docker run --rm -v {}/{}:/usr/share/cpp -w /usr/share/cpp python:3 bash -c \"timeout {} python {} < {} > {} 2> {}\"".format(
             currentWorkingDirectory, folderName, problem.timeout, pythonFileName, "in.txt", "out.txt", "err.txt")
         compilationCommand = os.system(runCommandString)
         if(compilationCommand != 0):

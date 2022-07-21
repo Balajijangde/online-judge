@@ -30,7 +30,7 @@ def cppCompilation(problem, user, body):
     compilationErrorFileName = "err.txt"
     # command : docker --rm -v <current path to mount>:<container path to mount> -w <working directory> gcc:latest bash -c "g++ cpp.cpp -o out 2> error.txt"
     currentWorkingDirectory = os.getcwd()
-    compilationCommandString = "docker run --rm -v \"{}\\{}\":/usr/share/cpp -w /usr/share/cpp gcc:latest bash -c \"g++ {} -o {} 2> {}\"".format(
+    compilationCommandString = "docker run --rm -v {}/{}:/usr/share/cpp -w /usr/share/cpp gcc:latest bash -c \"g++ {} -o {} 2> {}\"".format(
         currentWorkingDirectory, folderName, cppFileName, cppCompiledFileName, compilationErrorFileName)
     compilationCommand = os.system(compilationCommandString)
     if(compilationCommand != 0):
@@ -72,7 +72,7 @@ def cppCompilation(problem, user, body):
             errFile = "err.txt"
 
             exec = os.system(
-                "docker run --rm -v \"{}\\{}\":/usr/share/cpp -w /usr/share/cpp gcc:latest bash -c \"timeout {} ./out < {} > {} 2> {}\"".format(currentWorkingDirectory, folderName, problem.timeout, "in.txt", "out.txt", errFile))
+                "docker run --rm -v {}/{}:/usr/share/cpp -w /usr/share/cpp gcc:latest bash -c \"timeout {} ./out < {} > {} 2> {}\"".format(currentWorkingDirectory, folderName, problem.timeout, "in.txt", "out.txt", errFile))
 
             if(exec != 0):
                 errorFileHandler = open(folderName+"/"+errFile, "r")

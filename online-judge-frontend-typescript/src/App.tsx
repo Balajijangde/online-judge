@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
@@ -35,31 +35,38 @@ const App = () => {
     <Router>
       <Navbar bg="dark" expand="lg">
         <Container fluid>
-          <Navbar.Brand className="white" href="/">
-            Creatish Judge
-          </Navbar.Brand>
+          <Navbar.Brand className="white">Creatish Judge</Navbar.Brand>
           <Nav>
-            <Nav.Link className="white" href="/">
-              Home
+            <Nav.Link>
+              <Link to="/" className="white">
+                Home
+              </Link>
             </Nav.Link>
-            <Nav.Link className="white" href="/problems">
-              Problems
+            <Nav.Link>
+              <Link to="/problems" className="white">
+                Problems
+              </Link>
             </Nav.Link>
+
             {isLoggedIn ? (
-              <Nav.Link
-                className="white"
-                href="/logout"
-                onClick={(e) => {
-                  e.preventDefault();
-                  localStorage.removeItem(OJ_TOKEN_KEY);
-                  setIsLoggedIn(false);
-                }}
-              >
-                Logout
+              <Nav.Link>
+                <Link
+                  className="white pl-2"
+                  to="/logout"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    localStorage.removeItem(OJ_TOKEN_KEY);
+                    setIsLoggedIn(false);
+                  }}
+                >
+                  Logout
+                </Link>
               </Nav.Link>
             ) : (
-              <Nav.Link className="white" href="/login">
-                Login
+              <Nav.Link>
+                <Link to="/login" className="white pl-2">
+                  Login
+                </Link>
               </Nav.Link>
             )}
           </Nav>

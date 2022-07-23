@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/online-jugde/static/css/main.411a195b.css",
-    "main.js": "/online-jugde/static/js/main.21416c60.js",
-    "static/js/787.34a4c253.chunk.js": "/online-jugde/static/js/787.34a4c253.chunk.js",
-    "index.html": "/online-jugde/index.html",
-    "main.411a195b.css.map": "/online-jugde/static/css/main.411a195b.css.map",
-    "main.21416c60.js.map": "/online-jugde/static/js/main.21416c60.js.map",
-    "787.34a4c253.chunk.js.map": "/online-jugde/static/js/787.34a4c253.chunk.js.map"
+    "main.css": "/online-judge/static/css/main.411a195b.css",
+    "main.js": "/online-judge/static/js/main.56fcf928.js",
+    "static/js/787.34a4c253.chunk.js": "/online-judge/static/js/787.34a4c253.chunk.js",
+    "index.html": "/online-judge/index.html",
+    "main.411a195b.css.map": "/online-judge/static/css/main.411a195b.css.map",
+    "main.56fcf928.js.map": "/online-judge/static/js/main.56fcf928.js.map",
+    "787.34a4c253.chunk.js.map": "/online-judge/static/js/787.34a4c253.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.411a195b.css",
-    "static/js/main.21416c60.js"
+    "static/js/main.56fcf928.js"
   ]
 }

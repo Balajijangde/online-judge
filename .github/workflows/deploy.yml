@@ -22,7 +22,7 @@ jobs:
           run: npm install --prefix=online-judge-frontend-typescript
 
         - name: Build
-          run: npm run build --prefix=online-judge-frontend-typescript
+          run: npm run build --prefix=online-judge-frontend-typescript --if-present --silent
 
         - name: Deploy to Github Pages
           uses: JamesIves/github-pages-deploy-action@releases/v3

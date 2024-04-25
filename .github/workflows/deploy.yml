@@ -21,6 +21,9 @@ jobs:
         - name: Install dependencies
           run: npm install --prefix=online-judge-frontend-typescript
 
+        - name: Set CI false
+          run: export CI=false
+
         - name: Build
           run: npm run build --prefix=online-judge-frontend-typescript --if-present --silent
 
